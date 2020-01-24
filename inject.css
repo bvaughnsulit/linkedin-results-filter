@@ -1,0 +1,11 @@
+[bvs_ext='ok'] {
+	background-color: rgba(0, 255, 0, 0.2) !important;
+}
+
+[bvs_ext='err'] {
+	background-color: rgba(255, 0, 0, 0.1) !important;
+}
+
+[bvs_ext='hidden'] {
+	display: none
+}
