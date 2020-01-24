@@ -1,7 +1,5 @@
 function checkJobs(options){
 		const jobs = document.getElementsByClassName('artdeco-list__item');
-		console.log(options)
-
 		for (var i = 0; i < jobs.length; i++){
 				const companyName = jobs[i].getElementsByClassName('job-card-search__company-name')[0] ? jobs[i].getElementsByClassName('job-card-search__company-name')[0].textContent.trim() : false
 
@@ -11,12 +9,12 @@ function checkJobs(options){
 
 				if (!!companyName && !!companyLocation && !!jobTitle){
 					if (options.hiddenCompanies.includes(companyName) || options.hiddenLocations.some(x => {return companyLocation.includes(x)})){
-						jobs[i].setAttribute('bvs_ext', 'hidden')
+						jobs[i].setAttribute('linkedin-results-filter-ext', 'hidden')
 					} else {
-						jobs[i].setAttribute('bvs_ext', 'ok')
+						jobs[i].setAttribute('linkedin-results-filter-ext', 'ok')
 					}
 				} else {
-					jobs[i].setAttribute('bvs_ext', 'err')
+					jobs[i].setAttribute('linkedin-results-filter-ext', 'err')
 				}
 	}
 }
