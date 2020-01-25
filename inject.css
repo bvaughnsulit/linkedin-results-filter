@@ -7,5 +7,5 @@
 }
 
 [linkedin-results-filter-ext='hidden'] {
-	display: none
+	display:none !important;
 }

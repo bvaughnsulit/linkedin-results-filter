@@ -8,8 +8,10 @@ function checkJobs(options){
 				const jobTitle = jobs[i].getElementsByClassName('job-card-search__title')[0] ? jobs[i].getElementsByClassName('job-card-search__title')[0].textContent.trim() : false
 
 				if (!!companyName && !!companyLocation && !!jobTitle){
-					if (options.hiddenCompanies.includes(companyName) || options.hiddenLocations.some(x => {return companyLocation.includes(x)})){
-						jobs[i].setAttribute('linkedin-results-filter-ext', 'hidden')
+					if (options.hiddenCompanies.includes(companyName)){
+						hideResult(jobs[i], companyName)
+					} else if (options.hiddenLocations.some(x => {return companyLocation.includes(x)})) {
+						hideResult(jobs[i], companyLocation)
 					} else {
 						jobs[i].setAttribute('linkedin-results-filter-ext', 'ok')
 					}
@@ -17,6 +19,10 @@ function checkJobs(options){
 					jobs[i].setAttribute('linkedin-results-filter-ext', 'err')
 				}
 	}
+}
+
+function hideResult(result, reason){
+	result.setAttribute('linkedin-results-filter-ext', 'hidden')
 }
 
 chrome.storage.sync.get(['hiddenCompanies','hiddenLocations'], (x) => {
@@ -32,7 +38,6 @@ chrome.storage.sync.get(['hiddenCompanies','hiddenLocations'], (x) => {
 	
 	const resultsNode = document.getElementsByClassName('jobs-search-results')[0];
 	observer.observe(resultsNode, {
-		//attributes: true,
 		childList: true,
 		subtree: true
 	});
