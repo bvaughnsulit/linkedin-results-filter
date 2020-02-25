@@ -25,18 +25,22 @@ function hideResult(result, reason){
 	result.setAttribute('linkedin-results-filter-ext', 'hidden')
 }
 
+// get current user settings from storage
 chrome.storage.sync.get(['hiddenCompanies','hiddenLocations'], (x) => {
 	const hiddenCompanies = x.hiddenCompanies;
 	const hiddenLocations = x.hiddenLocations;
 
-	const observer = new MutationObserver((mutationsList, observer) => {
+	const resultsNode = document.getElementsByClassName('jobs-search-results')[0];
+
+	// call checkJobs() whenever changes observed in job-search-results node
+	const observer = new MutationObserver(() => {
 		checkJobs({
 			hiddenCompanies: hiddenCompanies,
 			hiddenLocations: hiddenLocations
 		});
 	});
 	
-	const resultsNode = document.getElementsByClassName('jobs-search-results')[0];
+	// specify what to observe, and what events to observe for, and start observing
 	observer.observe(resultsNode, {
 		childList: true,
 		subtree: true
