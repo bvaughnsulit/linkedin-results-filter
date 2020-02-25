@@ -10,7 +10,7 @@
   },
   "permissions": [
     "storage",
-    "contextMenus"
+    "contextMenus",
     "https://www.linkedin.com/jobs/search*"
   ],
   "content_scripts": [

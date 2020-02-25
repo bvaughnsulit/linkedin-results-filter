@@ -27,7 +27,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
         const location = info.selectionText.trim()
         hiddenLocations.push(location)
         chrome.storage.sync.set({hiddenLocations: hiddenLocations}, (x) => {
-          alert(`Added ${location} to hidden location`)
+          alert(`Added ${location} to hidden locations`)
         })
       } else {
         alert("error saving options")

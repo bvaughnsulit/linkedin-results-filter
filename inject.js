@@ -47,4 +47,3 @@ chrome.storage.sync.get(['hiddenCompanies','hiddenLocations'], (x) => {
 	});
 
 });
-
