@@ -4,15 +4,16 @@ function save_options() {
   const hiddenLocations = document.getElementById('hiddenLocations').value;
 
   // update stored values, then update UI with newly saved values
-  chrome.storage.sync.set({
+  chrome.storage.local.set({
     hiddenCompanies: hiddenCompanies.split(',').map(x => x.trim()),
     hiddenLocations: hiddenLocations.split(',').map(x => x.trim())
   }, () => {restore_options()});
 }
 
+
 // updates UI with the latest stored values
 function restore_options() {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     hiddenCompanies: '',
     hiddenLocations: ''
   }, (x) => {

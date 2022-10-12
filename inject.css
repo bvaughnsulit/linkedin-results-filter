@@ -1,5 +1,5 @@
 [linkedin-results-filter-ext='ok'] {
-	background-color: rgba(0, 255, 0, 0.2) !important;
+	background-color: rgba(0, 255, 0, 0.05) !important;
 }
 
 [linkedin-results-filter-ext='err'] {
@@ -7,5 +7,5 @@
 }
 
 [linkedin-results-filter-ext='hidden'] {
-	display:none !important;
+  opacity: 0.1;
 }
