@@ -22,7 +22,8 @@ chrome.contextMenus.onClicked.addListener((info) => {
 
 // on install, check if settings already exist, and if not, add default value
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get('hiddenCompanies', (res) => {
+  chrome.storage.local.get(['hiddenCompanies', 'badWords'], (res) => {
     if (res.hiddenCompanies === undefined) { chrome.storage.local.set({'hiddenCompanies': []}) }
+    if (res.badWords === undefined) { chrome.storage.local.set({'badWords': []}) }
   })
 })

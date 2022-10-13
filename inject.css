@@ -6,6 +6,15 @@
 	background-color: rgba(255, 0, 0, 0.1) !important;
 }
 
+[linkedin-results-filter-ext='promoted'] {
+  background-color: rgba(0, 0, 255, 0.05) !important;
+}
+
 [linkedin-results-filter-ext='hidden'] {
-  opacity: 0.1;
+  display:none !important;
+}
+
+/* OVERRIDES */
+.job-card-list__insight {
+  display:none !important;
 }
