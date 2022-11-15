@@ -1,23 +1,45 @@
 "use strict"
 
-
 const jobItemClassName = 'job-card-container'
 const jobListClassName = 'jobs-search-results-list'
 const jobTitleClassName = 'job-card-list__title'
-const companyNameClassName = 'job-card-container__primary-description'
-const jobIdAttribute = 'data-job-id'
+const companyNameClassName = 'job-card-container__company-name'
 const jobFooterClassName = 'job-card-container__footer-wrapper'
-const pageListClassName = 'artdeco-pagination__pages'
+// const pageListClassName = 'artdeco-pagination__pages'
 const metadataItemClassName = 'job-card-container__metadata-item'
 
 function checkJobs(options){
+  console.log('checking jobs...')
+
   const jobs = document.getElementsByClassName(jobItemClassName);
+  console.log(`found ${jobs.length} ${jobItemClassName}`)
+
   for (var i = 0; i < jobs.length; i++){
 
-    let companyName = jobs[i].getElementsByClassName	(companyNameClassName)[0].innerText
-    let jobTitle = jobs[i].getElementsByClassName(jobTitleClassName)[0].innerText
-    // let jobId = jobs[i].getAttribute(jobIdAttribute)
-    let footerContents = jobs[i].getElementsByClassName(jobFooterClassName)[0].innerText
+    let companyNameElements = jobs[i].getElementsByClassName(companyNameClassName)
+    let companyName
+    if (companyNameElements.length) {
+      companyName = companyNameElements[0].innerText
+    } else {
+      console.log(`${companyNameClassName} not found`)
+    }
+
+    let jobTitleElements = jobs[i].getElementsByClassName(jobTitleClassName)
+    let jobTitle
+    if (jobTitleElements.length) {
+      jobTitle = jobTitleElements[0].innerText
+    } else {
+      console.log(`${jobItemClassName} not found`)
+    }
+
+    let footerElements = jobs[i].getElementsByClassName(jobFooterClassName)
+    let footerContents
+    if (footerElements.length) {
+      footerContents = footerElements[0].innerText
+    } else {
+      console.log(`${jobFooterClassName} not found`)
+    }
+
     let metadata = jobs[i].getElementsByClassName(metadataItemClassName)
 
     // assumes that location will always be the first item of metadata
@@ -80,7 +102,14 @@ chrome.storage.local.get(['hiddenCompanies', 'badWords'], (x) => {
 	let hiddenCompanies = arrToMap(x.hiddenCompanies);
   let badWords = arrToRegExArr(x.badWords)
 
-	const resultsNode = document.getElementsByClassName(jobListClassName)[0];
+	const jobListElements = document.getElementsByClassName(jobListClassName);
+  let resultsNode
+  if (jobListElements.length) {
+    resultsNode = jobListElements[0]
+  } else {
+    console.log(`${jobItemClassName} not found`)
+  }
+
 
 	// call checkJobs() whenever changes observed in job-search-results node
 	const observer = new MutationObserver(() => {

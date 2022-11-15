@@ -7,7 +7,9 @@
 }
 
 [linkedin-results-filter-ext='promoted'] {
-  background-color: rgba(0, 0, 255, 0.05) !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  color: grey !important;
+  font-style: italic !important;
 }
 
 [linkedin-results-filter-ext='hidden'] {
