@@ -9,6 +9,9 @@ const jobFooterClassName = 'job-card-container__footer-wrapper'
 const metadataItemClassName = 'job-card-container__metadata-item'
 const workplaceTypeClassName = 'job-card-container__metadata-item--workplace-type'
 
+const jobDescClassName = 'jobs-search__job-details'
+const jobDescId = 'job-details'
+
 function checkJobs(options){
   console.log('checking jobs...')
 
@@ -102,6 +105,21 @@ function checkJobs(options){
   }
 }
 
+function highlight(mutationsArr) {
+  console.log(mutationsArr.length)
+  const descDiv = document.getElementById(jobDescId)
+  const descHtml = descDiv.innerHTML.toString()
+
+  // for(const e of mutationsArr){
+  //   if ( e.target.parentElement && e.target.parentElement.id === jobDescId ) {
+  //     const text = descHtml.replace('a','aaaaa')
+  //     console.log(descHtml, text)
+  //     descDiv.innerHTML = text
+  //     break;
+  //   }
+  // }
+}
+
 const setCustomAttribute = (element, value, debugInfo) => {
   element.setAttribute('linkedin-results-filter-ext', value)
   if (debugInfo){ 
@@ -121,6 +139,26 @@ chrome.storage.local.get(['hiddenCompanies', 'badWords'], (x) => {
   } else {
     console.log(`${jobItemClassName} not found`)
   }
+
+  const jobDescObserver = new MutationObserver((mutationList) => {
+    highlight(mutationList)
+  });
+
+  const jobDescElements = document.getElementsByClassName(jobDescClassName)
+  let jobDescNode
+  if (jobDescElements.length){
+    jobDescNode = jobDescElements[0]
+    console.log(jobDescNode)
+
+    jobDescObserver.observe(jobDescNode, {
+      childList: true,
+      subtree: true
+    });
+  }
+  else {
+    console.log(`${jobDescClassName} not found`)
+  }
+
 
 	// call checkJobs() whenever changes observed in job-search-results node
 	const jobListObserver = new MutationObserver(() => {
