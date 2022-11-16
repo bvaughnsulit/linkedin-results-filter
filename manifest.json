@@ -20,7 +20,7 @@
         "inject.css"
       ],
       "js": [
-        "inject.js"
+        "job-filter.js"
       ]
     }
   ]

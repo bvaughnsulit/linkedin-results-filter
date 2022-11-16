@@ -7,6 +7,7 @@ const companyNameClassName = 'job-card-container__company-name'
 const jobFooterClassName = 'job-card-container__footer-wrapper'
 // const pageListClassName = 'artdeco-pagination__pages'
 const metadataItemClassName = 'job-card-container__metadata-item'
+const workplaceTypeClassName = 'job-card-container__metadata-item--workplace-type'
 
 function checkJobs(options){
   console.log('checking jobs...')
@@ -16,7 +17,7 @@ function checkJobs(options){
 
   for (var i = 0; i < jobs.length; i++){
 
-    let companyNameElements = jobs[i].getElementsByClassName(companyNameClassName)
+    const companyNameElements = jobs[i].getElementsByClassName(companyNameClassName)
     let companyName
     if (companyNameElements.length) {
       companyName = companyNameElements[0].innerText
@@ -24,7 +25,7 @@ function checkJobs(options){
       console.log(`${companyNameClassName} not found`)
     }
 
-    let jobTitleElements = jobs[i].getElementsByClassName(jobTitleClassName)
+    const jobTitleElements = jobs[i].getElementsByClassName(jobTitleClassName)
     let jobTitle
     if (jobTitleElements.length) {
       jobTitle = jobTitleElements[0].innerText
@@ -32,7 +33,7 @@ function checkJobs(options){
       console.log(`${jobItemClassName} not found`)
     }
 
-    let footerElements = jobs[i].getElementsByClassName(jobFooterClassName)
+    const footerElements = jobs[i].getElementsByClassName(jobFooterClassName)
     let footerContents
     if (footerElements.length) {
       footerContents = footerElements[0].innerText
@@ -40,19 +41,30 @@ function checkJobs(options){
       console.log(`${jobFooterClassName} not found`)
     }
 
-    let metadata = jobs[i].getElementsByClassName(metadataItemClassName)
+    const metadata= jobs[i].getElementsByClassName(metadataItemClassName)
+    let location 
+    if (metadata.length) {
+      // assumes that location will always be the first item of metadata
+      location = metadata[0].innerText
+      
+      for (let j = 1; j < metadata.length; j++){
+        const metadataItem = metadata[j]
+        if (!metadataItem.className.includes(workplaceTypeClassName)){
+          // console.log(`hiding ${metadataItem.innerText}`)
+          metadataItem.innerText = ''
+        }
+      }
+    } else {
+      console.log(`${metadataItemClassName} not found`)
+    }
 
-    // assumes that location will always be the first item of metadata
-    let location = metadata[0].innerText
-
+    const workplaceTypeElements = jobs[i].getElementsByClassName(workplaceTypeClassName)
+    const workplaceType = workplaceTypeElements.length ?
+        workplaceTypeElements[0].innerText.trim() :
+        ''
 
     if (!!companyName){ companyName = companyName.trim() }
     if (!!jobTitle){ jobTitle = jobTitle.trim() }
-    if (metadata.length > 1) {
-      for (let j = 1; j < metadata.length; j++){
-        metadata[j].innerText = ''
-      }
-    }
 
     if (!!companyName && !!jobTitle){
 
@@ -65,7 +77,7 @@ function checkJobs(options){
         }
       }
 
-      const debugInfo = [jobTitle, companyName, location.trim()]
+      const debugInfo = [jobTitle, companyName, location.trim(), workplaceType]
 
       if (hasBadWordMatch) {
         setCustomAttribute(jobs[i], 'hidden', debugInfo)
@@ -73,7 +85,7 @@ function checkJobs(options){
       else if (options.hiddenCompanies.has(companyName)){
         setCustomAttribute(jobs[i], 'hidden', debugInfo)
       }
-      else if (location.includes('On-site') || location.includes('Hybrid')){
+      else if (workplaceType === 'On-site' || workplaceType === 'Hybrid'){
         setCustomAttribute(jobs[i], 'hidden', debugInfo)
       }
       else if (footerContents.includes('Promoted')) {
@@ -103,21 +115,20 @@ chrome.storage.local.get(['hiddenCompanies', 'badWords'], (x) => {
   let badWords = arrToRegExArr(x.badWords)
 
 	const jobListElements = document.getElementsByClassName(jobListClassName);
-  let resultsNode
+  let jobListNode
   if (jobListElements.length) {
-    resultsNode = jobListElements[0]
+    jobListNode = jobListElements[0]
   } else {
     console.log(`${jobItemClassName} not found`)
   }
 
-
 	// call checkJobs() whenever changes observed in job-search-results node
-	const observer = new MutationObserver(() => {
+	const jobListObserver = new MutationObserver(() => {
 		checkJobs({ hiddenCompanies, badWords });
 	});
 	
 	// specify what to observe, and what events to observe for, and start observing
-	observer.observe(resultsNode, {
+	jobListObserver.observe(jobListNode, {
 		childList: true,
 		subtree: true
 	});
