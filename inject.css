@@ -16,6 +16,11 @@
   display:none !important;
 }
 
+[linkedin-results-filter-ext='keyword-not-found'] {
+  background-color: rgba(0, 255, 0, 0.5) !important;
+}
+
+
 /* OVERRIDES */
 .job-card-list__insight {
   display:none !important;

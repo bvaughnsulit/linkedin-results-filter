@@ -10,7 +10,8 @@ const metadataItemClassName = 'job-card-container__metadata-item'
 const workplaceTypeClassName = 'job-card-container__metadata-item--workplace-type'
 
 const jobDescClassName = 'jobs-search__job-details'
-const jobDescId = 'job-details'
+const jobDescContainerClassName = 'jobs-description-content'
+const jobDescOriginalId = 'job-details'
 
 function checkJobs(options){
   console.log('checking jobs...')
@@ -105,19 +106,17 @@ function checkJobs(options){
   }
 }
 
-function highlight(mutationsArr) {
-  console.log(mutationsArr.length)
-  const descDiv = document.getElementById(jobDescId)
+function highlight(_, observer) {
+  const descDiv = document.getElementById(jobDescOriginalId)
   const descHtml = descDiv.innerHTML.toString()
 
-  // for(const e of mutationsArr){
-  //   if ( e.target.parentElement && e.target.parentElement.id === jobDescId ) {
-  //     const text = descHtml.replace('a','aaaaa')
-  //     console.log(descHtml, text)
-  //     descDiv.innerHTML = text
-  //     break;
-  //   }
-  // }
+  if (descHtml.length > 100) {
+    observer.disconnect()
+    const newNode = document.getElementById('linkedin-results-filter-desc')
+    newNode.innerHTML = descHtml.replace(/(remote|on-site|office|hybrid|headquarters)/gi, '<mark>$&</mark>') 
+
+    setCustomAttribute(descDiv, "hidden")
+  }
 }
 
 const setCustomAttribute = (element, value, debugInfo) => {
@@ -140,8 +139,8 @@ chrome.storage.local.get(['hiddenCompanies', 'badWords'], (x) => {
     console.log(`${jobItemClassName} not found`)
   }
 
-  const jobDescObserver = new MutationObserver((mutationList) => {
-    highlight(mutationList)
+  const jobDescObserver = new MutationObserver((mutationList, observer) => {
+    highlight(mutationList, observer)
   });
 
   const jobDescElements = document.getElementsByClassName(jobDescClassName)
@@ -149,6 +148,12 @@ chrome.storage.local.get(['hiddenCompanies', 'badWords'], (x) => {
   if (jobDescElements.length){
     jobDescNode = jobDescElements[0]
     console.log(jobDescNode)
+
+    const jobDescContainer = document.getElementsByClassName(jobDescContainerClassName)[0]
+    const newNode = document.createElement('div')
+    newNode.id = 'linkedin-results-filter-desc'
+
+    jobDescContainer.appendChild(newNode)
 
     jobDescObserver.observe(jobDescNode, {
       childList: true,
@@ -160,10 +165,14 @@ chrome.storage.local.get(['hiddenCompanies', 'badWords'], (x) => {
   }
 
 
-	// call checkJobs() whenever changes observed in job-search-results node
-	const jobListObserver = new MutationObserver(() => {
-		checkJobs({ hiddenCompanies, badWords });
-	});
+  // call checkJobs() whenever changes observed in job-search-results node
+  const jobListObserver = new MutationObserver(() => {
+    checkJobs({ hiddenCompanies, badWords });
+    jobDescObserver.observe(jobDescNode, {
+      childList: true,
+      subtree: true
+    });
+  });
 	
 	// specify what to observe, and what events to observe for, and start observing
 	jobListObserver.observe(jobListNode, {
